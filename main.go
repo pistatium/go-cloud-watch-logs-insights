@@ -5,31 +5,33 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/cloudwatchlogs"
+
+	"github.com/araddon/dateparse"
 )
 
 var (
-	startTimeStr = flag.String("s", "2018-12-25", "start time")
-	endTimeStr   = flag.String("e", "2018-12-26", "end time")
+	now = time.Now().UnixNano() / 1000000
+	startTimeStr = flag.String("s", strconv.FormatInt(now - 1000 * 60 * 5, 10), "start time")
+	endTimeStr   = flag.String("e", strconv.FormatInt(now, 10), "end time")
 	logGroupName = flag.String("n", "/aws/lambda/hoge", "log group name")
 	limit        = flag.Int("l", 10, "limit")
 	query        = flag.String("q", "fields @timestamp, @message | sort @timestamp desc", "query")
 )
 
-const DateLayout = "2006-01-02"
-
 func main() {
 	flag.Parse()
-	startTime, err := time.Parse(DateLayout, *startTimeStr)
+	startTime, err := dateparse.ParseAny(*startTimeStr)
 	if err != nil {
 		panic(err)
 	}
-	endTime, err := time.Parse(DateLayout, *endTimeStr)
+	endTime, err := dateparse.ParseAny(*endTimeStr)
 	if err != nil {
 		panic(err)
 	}
