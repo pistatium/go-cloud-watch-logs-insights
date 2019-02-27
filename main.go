@@ -62,7 +62,7 @@ func main() {
 
 func NewAwsCloudWatchClient() *cloudwatchlogs.CloudWatchLogs {
 	sess := session.Must(session.NewSession())
-	creds := credentials.NewStaticCredentials(os.Getenv("AccessKeyID"), os.Getenv("SecretAccessKey"), os.Getenv("SessionToken"))
+	creds := credentials.NewStaticCredentials(os.Getenv("AWS_ACCESS_KEY_ID"), os.Getenv("AWS_SECRET_ACCESS_KEY"), os.Getenv("SessionToken"))
 	return cloudwatchlogs.New(
 		sess,
 		aws.NewConfig().WithRegion("ap-northeast-1").WithCredentials(creds),
